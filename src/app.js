@@ -45,25 +45,22 @@ app.get('/weather', (req, res) => {
     });
   }
 
-  pointstack(
-    req.query.adress,
-    (error, { latitude, longitude, location } = {}) => {
+  pointstack(req.query.adress, (error, { latitude, longitude, location } = {}) => {
+    if (error) {
+      return res.send({ error });
+    }
+    //res.send(data);
+    forecast(latitude, longitude, (error, forecastData) => {
       if (error) {
         return res.send({ error });
       }
-      //res.send(data);
-      forecast(latitude, longitude, (error, forecastData) => {
-        if (error) {
-          return res.send({ error });
-        }
-        res.send({
-          forecast: forecastData,
-          location,
-          adress: req.query.adress,
-        });
+      res.send({
+        forecast: forecastData,
+        location,
+        adress: req.query.adress,
       });
-    }
-  );
+    });
+  });
 
   //res.send({ adress: req.query.adress });
 });
